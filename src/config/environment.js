@@ -25,8 +25,8 @@ export const config = {
     description: 'Book, Buy, and Sell Stylist Appointments',
     url:
       environment === 'production'
-        ? 'https://bookerhq.com'
-        : 'https://testing-bookerhq.netlify.app',
+        ? 'https://bookerhq-production.netlify.app'
+        : window.location.origin, // Use current branch deploy URL
   },
 };
 
