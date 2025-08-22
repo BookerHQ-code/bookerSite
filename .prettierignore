@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# Environment files
+.env*
+
+# Package files
+package-lock.json
+yarn.lock
+
+# Config files
+*.config.js
+*.config.ts
+
+# Public assets
+public/
+
+# Generated files
+coverage/
+
+# Logs
+*.log

@@ -1,0 +1,20 @@
+[build]
+  publish = "build"
+  command = "npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production]
+  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "production" }
+
+[context.testing]
+  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "testing" }
+
+[context.branch-deploy]
+  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "testing" }
+
+[context.deploy-preview]
+  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "testing" }
