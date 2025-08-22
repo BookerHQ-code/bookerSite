@@ -14,11 +14,14 @@ const HomePage = () => {
               <span className="block text-brand-100">Stylist Appointments</span>
             </h1>
             <p className="text-xl sm:text-2xl text-brand-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-              The modern platform connecting customers, stylists, and salons. 
+              The modern platform connecting customers, stylists, and salons.
               Discover, book, and trade beauty appointments with ease.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/signup" className="btn-primary bg-white text-brand-600 hover:bg-gray-50 text-lg px-8 py-4">
+              <Link
+                to="/signup"
+                className="btn-primary bg-white text-brand-600 hover:bg-gray-50 text-lg px-8 py-4"
+              >
                 Get Started Free
               </Link>
               <button className="btn-secondary border-brand-200 text-white hover:bg-brand-700 text-lg px-8 py-4">
@@ -27,12 +30,15 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-black opacity-10 pointer-events-none">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          ></div>
         </div>
       </section>
 
@@ -44,7 +50,7 @@ const HomePage = () => {
               Perfect for Everyone
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Whether you're booking, providing, or managing beauty services, 
+              Whether you're booking, providing, or managing beauty services,
               BookerHQ has everything you need.
             </p>
           </div>
@@ -53,11 +59,23 @@ const HomePage = () => {
             {/* For Customers */}
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
               <div className="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <svg
+                  className="w-6 h-6 text-brand-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">For Customers</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                For Customers
+              </h3>
               <ul className="space-y-3 text-gray-600 mb-6">
                 <li className="flex items-start">
                   <span className="text-brand-500 mr-2">•</span>
@@ -84,11 +102,23 @@ const HomePage = () => {
             {/* For Stylists */}
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
               <div className="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                <svg
+                  className="w-6 h-6 text-accent-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
+                  />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">For Stylists</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                For Stylists
+              </h3>
               <ul className="space-y-3 text-gray-600 mb-6">
                 <li className="flex items-start">
                   <span className="text-accent-500 mr-2">•</span>
@@ -115,11 +145,23 @@ const HomePage = () => {
             {/* For Business Owners */}
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                <svg
+                  className="w-6 h-6 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">For Salon Owners</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                For Salon Owners
+              </h3>
               <ul className="space-y-3 text-gray-600 mb-6">
                 <li className="flex items-start">
                   <span className="text-green-500 mr-2">•</span>
@@ -138,7 +180,10 @@ const HomePage = () => {
                   Grow your business online
                 </li>
               </ul>
-              <Link to="/signup" className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg w-full text-center transition-colors">
+              <Link
+                to="/signup"
+                className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg w-full text-center transition-colors"
+              >
                 Manage Your Salon
               </Link>
             </div>
@@ -154,7 +199,8 @@ const HomePage = () => {
               How BookerHQ Works
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Simple, secure, and efficient appointment management for the beauty industry.
+              Simple, secure, and efficient appointment management for the
+              beauty industry.
             </p>
           </div>
 
@@ -163,9 +209,11 @@ const HomePage = () => {
               <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-brand-600">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Sign Up & Set Up</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Sign Up & Set Up
+              </h3>
               <p className="text-gray-600">
-                Create your profile as a customer, stylist, or business owner. 
+                Create your profile as a customer, stylist, or business owner.
                 Set up your services, availability, and preferences.
               </p>
             </div>
@@ -174,10 +222,12 @@ const HomePage = () => {
               <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-brand-600">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Connect & Book</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Connect & Book
+              </h3>
               <p className="text-gray-600">
-                Browse available appointments, book services, or open your slots for bidding. 
-                Everything happens securely on our platform.
+                Browse available appointments, book services, or open your slots
+                for bidding. Everything happens securely on our platform.
               </p>
             </div>
 
@@ -185,10 +235,13 @@ const HomePage = () => {
               <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-brand-600">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Enjoy & Grow</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Enjoy & Grow
+              </h3>
               <p className="text-gray-600">
-                Attend your appointments, leave reviews, and build lasting relationships. 
-                Grow your business or discover your new favorite stylist.
+                Attend your appointments, leave reviews, and build lasting
+                relationships. Grow your business or discover your new favorite
+                stylist.
               </p>
             </div>
           </div>
@@ -202,10 +255,13 @@ const HomePage = () => {
             Ready to Transform Your Beauty Experience?
           </h2>
           <p className="text-xl text-brand-100 mb-8">
-            Join thousands of customers, stylists, and salon owners who trust BookerHQ 
-            for their appointment needs.
+            Join thousands of customers, stylists, and salon owners who trust
+            BookerHQ for their appointment needs.
           </p>
-          <Link to="/signup" className="btn-primary bg-white text-brand-600 hover:bg-gray-50 text-lg px-8 py-4 inline-block">
+          <Link
+            to="/signup"
+            className="btn-primary bg-white text-brand-600 hover:bg-gray-50 text-lg px-8 py-4 inline-block"
+          >
             Get Started Today
           </Link>
         </div>

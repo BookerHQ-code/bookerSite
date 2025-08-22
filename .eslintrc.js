@@ -46,8 +46,8 @@ module.exports = {
     'no-duplicate-imports': 'error',
 
     // Best practices
-    'eqeqeq': ['error', 'always'],
-    'curly': 'error',
+    eqeqeq: ['error', 'always'],
+    curly: 'error',
   },
   ignorePatterns: [
     'build/**/*',

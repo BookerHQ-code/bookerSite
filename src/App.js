@@ -18,8 +18,20 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             {/* Future routes for authentication will go here */}
-            <Route path="/login" element={<div className="p-8 text-center">Login Page - Coming Soon</div>} />
-            <Route path="/signup" element={<div className="p-8 text-center">Sign Up Page - Coming Soon</div>} />
+            <Route
+              path="/login"
+              element={
+                <div className="p-8 text-center">Login Page - Coming Soon</div>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <div className="p-8 text-center">
+                  Sign Up Page - Coming Soon
+                </div>
+              }
+            />
           </Routes>
         </main>
         <Footer />
