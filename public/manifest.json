@@ -1,0 +1,35 @@
+{
+  "short_name": "BookerHQ",
+  "name": "BookerHQ - Book, Buy & Sell Stylist Appointments",
+  "description": "The modern platform connecting customers, stylists, and salons.",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzIiIGZpbGw9IiMwZWE1ZTkiLz4KPHBhdGggZD0iTTQ4IDU2LjY2NjdDNDggNTEuNzcyNCA1MS43NzI0IDQ4IDU2LjY2NjcgNDhIODYuNjY2N0MxMDQuNzQ1IDQ4IDExOS4zMzMgNjIuNTg4NCAxMTkuMzMzIDgwLjY2NjdDMTE5LjMzMyA4OS42IDExMy4wNjcgMTAxLjMzMyAxMDQgMTA0LjUzM0MxMTYuNTMzIDEwNy43MzMgMTI1LjMzMyAxMTYuNTMzIDEyNS4zMzMgMTMxLjJDMTI1LjMzMyAxNTEuMzc5IDEwOS4zNzkgMTY3LjMzMyA4OS4yIDE2Ny4zMzNINTYuNjY2N0M1MS43NzI0IDE2Ny4zMzMgNDggMTYzLjU2MSA0OCAxNTguNjY3VjU2LjY2NjdaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNzIgNzJWOTBIODYuNjY2N0M4OS41NTUxIDkwIDk2IDg3LjMyMTQgOTYgODAuNjY2N0M5NiA3NC4wMTIgODkuNTU1MSA3MiA4Ni42NjY3IDcySDcyWiIgZmlsbD0iIzBlYTVlOSIvPgo8cGF0aCBkPSJNNzIgMTA4VjE0NEg4OS4yQzEwMC4wNTUgMTQ0IDEwOCAxMzYuMDU1IDEwOCAxMjUuMkMxMDggMTE0LjM0NSAxMDAuMDU1IDEwOCA4OS4yIDEwOEg3MloiIGZpbGw9IiMwZWE1ZTkiLz4KPC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iODUiIGZpbGw9IiMwZWE1ZTkiLz4KPHBhdGggZD0iTTEyOCAxNTEuMTExQzEyOCAxMzkuMzk1IDEzNy4zOTUgMTMwIDEzNy4xMTEgMTMwSDIzMS4xMTFDMjc5LjMyNyAxMzAgMzE4LjIyMiAxNjguODk1IDMxOC4yMjIgMjE3LjExMUMzMTguMjIyIDI0MC4yMjIgMzAyLjY2NyAyNzAuMjIyIDI3OCwyNzkuMTExQzMxMS41NTYgMjg4IDMzNS4xMTEgMzExLjU1NiAzMzUuMTExIDM1MS4xMTFDMzM1LjExMSA0MDMuNjc4IDI5Mi42NzggNDQ2LjExMSAyNDAuMTExIDQ0Ni4xMTFIMTQ5LjMzM0MxMzcuNjE4IDQ0Ni4xMTEgMTI4IDQzNi40OTMgMTI4IDQyNC43NzhWMTUxLjExMVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xOTIgMTkyVjI0MEgyMzEuMTExQzIzOS4yNTkgMjQwIDI1NiAyMzMuNDgxIDI1NiAyMTcuMTExQzI1NiAyMDAuNzQxIDIzOS4yNTkgMTkyIDIzMS4xMTEgMTkySDgSWiIgZmlsbD0iIzBlYTVlOSIvPgo8cGF0aCBkPSJNMTkyIDI4OFYzODRIMjQwLjExMUMyNjcuNDgxIDM4NCAyODggMzYzLjQ4MSAyODggMzM2LjExMUMyODggMzA4Ljc0MSAyNjcuNDgxIDI4OCAyNDAuMTExIDI4OEgxOTJaIiBmaWxsPSIjMGVhNWU5Ii8+Cjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0ea5e9",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "categories": ["business", "lifestyle", "beauty"],
+  "screenshots": []
+}
