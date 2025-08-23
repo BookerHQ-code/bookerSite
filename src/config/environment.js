@@ -1,6 +1,16 @@
 // Environment configuration for BookerHQ
 const environment = process.env.REACT_APP_ENVIRONMENT || 'development';
 
+const getAppUrl = () => {
+  // Handle the special DEPLOY_URL case
+  if (process.env.REACT_APP_URL === 'DEPLOY_URL') {
+    // Netlify replaces DEPLOY_URL during build
+    return process.env.DEPLOY_URL || 'http://localhost:3000';
+  }
+
+  return process.env.REACT_APP_URL || 'http://localhost:3000';
+};
+
 export const config = {
   environment,
   isProduction: environment === 'production',
@@ -11,7 +21,7 @@ export const config = {
   supabase: {
     url: process.env.REACT_APP_SUPABASE_URL,
     anonKey: process.env.REACT_APP_SUPABASE_ANON_KEY,
-    redirectTo: `${process.env.REACT_APP_URL || 'http://localhost:3000'}/auth/callback`,
+    redirectTo: `${getAppUrl()}/auth/callback`, // ✅ FIXED: Removed the extra part
   },
 
   loops: {
@@ -32,10 +42,7 @@ export const config = {
   app: {
     name: 'BookerHQ',
     description: 'Book, Buy, and Sell Stylist Appointments',
-    url:
-      environment === 'production'
-        ? 'https://bookerhq-production.netlify.app'
-        : window.location.origin, // Use current branch deploy URL
+    url: getAppUrl(),
   },
 };
 
