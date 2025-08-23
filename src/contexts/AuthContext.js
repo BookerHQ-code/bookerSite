@@ -326,6 +326,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     // console.log('✅ Auth state cleared');
+
     // console.log('🔄 Setting loading to false');
     setLoading(false);
 
