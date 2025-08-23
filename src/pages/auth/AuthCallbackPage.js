@@ -171,17 +171,40 @@ const AuthCallbackPage = () => {
       try {
         // console.log('🔄 Processing auth callback...');
 
+        let accessToken, refreshToken, type, error, errorDescription;
+
         // Get the token from URL hash or search params
-        const hashParams = new URLSearchParams(window.location.hash.slice(1));
-        const accessToken =
-          hashParams.get('access_token') || searchParams.get('access_token');
-        const refreshToken =
-          hashParams.get('refresh_token') || searchParams.get('refresh_token');
-        const type = hashParams.get('type') || searchParams.get('type');
-        const error = hashParams.get('error') || searchParams.get('error');
-        const errorDescription =
-          hashParams.get('error_description') ||
-          searchParams.get('error_description');
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+          const hashParams = new URLSearchParams(hash);
+          accessToken = hashParams.get('access_token');
+          refreshToken = hashParams.get('refresh_token');
+          type = hashParams.get('type') || 'signup'; // Default to signup for ConfirmationURL
+          error = hashParams.get('error');
+          errorDescription = hashParams.get('error_description');
+        }
+
+        if (!accessToken) {
+          accessToken = searchParams.get('access_token');
+          refreshToken = searchParams.get('refresh_token');
+          type = searchParams.get('type') || 'signup';
+          error = searchParams.get('error');
+          errorDescription = searchParams.get('error_description');
+        }
+
+        // Also check for token_hash format (custom template)
+        if (!accessToken) {
+          const tokenHash =
+            searchParams.get('token_hash') ||
+            new URLSearchParams(hash).get('token_hash');
+          if (tokenHash) {
+            accessToken = tokenHash;
+            type =
+              searchParams.get('type') ||
+              new URLSearchParams(hash).get('type') ||
+              'signup';
+          }
+        }
 
         // Handle errors from the auth provider
         if (error) {

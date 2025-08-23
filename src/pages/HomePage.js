@@ -1,7 +1,22 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 // import config from './config/environment';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  // ✅ Handle auth hash redirects
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (
+      hash &&
+      (hash.includes('access_token') || hash.includes('token_hash'))
+    ) {
+      console.log('🔄 Redirecting hash-based auth to callback page');
+      navigate('/auth/callback' + hash, { replace: true });
+    }
+  }, [navigate]);
+
   return (
     <div className="bg-white">
       {/* Hero Section */}
