@@ -9,8 +9,17 @@ export const config = {
 
   // Supabase configuration
   supabase: {
-    url: process.env.REACT_APP_SUPABASE_URL || '',
-    anonKey: process.env.REACT_APP_SUPABASE_ANON_KEY || '',
+    url: process.env.REACT_APP_SUPABASE_URL,
+    anonKey: process.env.REACT_APP_SUPABASE_ANON_KEY,
+    redirectTo: `${process.env.REACT_APP_URL || 'http://localhost:3000'}/auth/callback`,
+  },
+
+  loops: {
+    apiKey: process.env.REACT_APP_LOOPS_API_KEY,
+    baseUrl: 'https://app.loops.so/api/v1',
+    transactionalIds: {
+      emailVerification: process.env.REACT_APP_LOOPS_VERIFICATION_ID,
+    },
   },
 
   // API endpoints and table prefixes

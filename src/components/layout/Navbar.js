@@ -1,9 +1,37 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config/environment';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  // Auth hooks - properly placed inside the component
+  const { user, userProfile, signOut, loading } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setIsUserMenuOpen(false);
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
+  const getUserDisplayName = () => {
+    if (userProfile?.customer?.first_name) {
+      return userProfile.customer.first_name;
+    }
+    if (userProfile?.stylist?.first_name) {
+      return userProfile.stylist.first_name;
+    }
+    if (userProfile?.tenant?.business_name) {
+      return userProfile.tenant.business_name;
+    }
+    return user?.email?.split('@')[0] || 'User';
+  };
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
@@ -30,15 +58,76 @@ const Navbar = () => {
               >
                 Home
               </Link>
-              <Link
-                to="/login"
-                className="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors"
-              >
-                Login
-              </Link>
-              <Link to="/signup" className="btn-primary text-sm">
-                Get Started
-              </Link>
+
+              {user ? (
+                // Authenticated user menu
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+
+                  <div className="relative inline-block text-left">
+                    <button
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="flex items-center text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors"
+                    >
+                      {loading ? 'Loading...' : getUserDisplayName()}
+                      <svg
+                        className="ml-1 h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+
+                    {isUserMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                        <div className="py-1">
+                          <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-100">
+                            {user?.email}
+                          </div>
+                          <Link
+                            to="/dashboard"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            Dashboard
+                          </Link>
+                          <button
+                            onClick={handleSignOut}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            Sign Out
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                // Non-authenticated user menu
+                <>
+                  <Link
+                    to="/login"
+                    className="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <Link to="/signup" className="btn-primary text-sm">
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -92,20 +181,60 @@ const Navbar = () => {
             <Link
               to="/"
               className="text-gray-600 hover:text-brand-600 block px-3 py-2 text-base font-medium"
+              onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
-            <Link
-              to="/login"
-              className="text-gray-600 hover:text-brand-600 block px-3 py-2 text-base font-medium"
-            >
-              Login
-            </Link>
-            <Link to="/signup" className="block px-3 py-2">
-              <span className="btn-primary text-sm inline-block">
-                Get Started
-              </span>
-            </Link>
+
+            {user ? (
+              // Authenticated mobile menu
+              <>
+                <Link
+                  to="/dashboard"
+                  className="text-gray-600 hover:text-brand-600 block px-3 py-2 text-base font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+
+                <div className="border-t border-gray-200 pt-4 pb-3">
+                  <div className="px-3 py-2">
+                    <div className="text-base font-medium text-gray-800">
+                      {loading ? 'Loading...' : getUserDisplayName()}
+                    </div>
+                    <div className="text-sm font-medium text-gray-500">
+                      {user?.email}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-brand-600"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </>
+            ) : (
+              // Non-authenticated mobile menu
+              <>
+                <Link
+                  to="/login"
+                  className="text-gray-600 hover:text-brand-600 block px-3 py-2 text-base font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="block px-3 py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="btn-primary text-sm inline-block">
+                    Get Started
+                  </span>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
