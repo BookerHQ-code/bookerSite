@@ -26,7 +26,7 @@ const AuthCallbackPage = () => {
   // Function to create database records after email verification
   const createUserDatabaseRecords = async user => {
     try {
-      console.log('🔄 Creating database records for verified user...');
+      // console.log('🔄 Creating database records for verified user...');
 
       // Get user metadata from auth
       const userData = user.user_metadata || {};
@@ -36,7 +36,7 @@ const AuthCallbackPage = () => {
         throw new Error('User role not found in metadata');
       }
 
-      console.log('👤 Creating user record...');
+      // console.log('👤 Creating user record...');
 
       let userId = null;
 
@@ -53,7 +53,7 @@ const AuthCallbackPage = () => {
       if (userError) {
         // If user already exists, fetch it instead
         if (userError.code === '23505') {
-          console.log('🔄 User record already exists, fetching...');
+          // console.log('🔄 User record already exists, fetching...');
           const { data: existingUser, error: fetchError } = await supabase
             .from(getTableName('users'))
             .select('*')
@@ -73,10 +73,10 @@ const AuthCallbackPage = () => {
         throw new Error('Could not get user ID');
       }
 
-      console.log('✅ User record created/found');
+      // console.log('✅ User record created/found');
 
       // Create role assignment using secure function
-      console.log('🔄 Assigning user role...');
+      // console.log('🔄 Assigning user role...');
       const functionName = config.api.tablePrefix
         ? 'assign_testing_user_role'
         : 'assign_user_role';
@@ -89,10 +89,10 @@ const AuthCallbackPage = () => {
         throw roleError;
       }
 
-      console.log('✅ Role assigned');
+      // console.log('✅ Role assigned');
 
       // Create specific profile based on role
-      console.log('🔄 Creating profile...');
+      // console.log('🔄 Creating profile...');
 
       if (role === 'customer') {
         const { error: profileError } = await supabase
@@ -137,7 +137,7 @@ const AuthCallbackPage = () => {
         }
       }
 
-      console.log('✅ Profile created successfully');
+      // console.log('✅ Profile created successfully');
       return true;
     } catch (error) {
       console.error('❌ Database setup failed:', error);
@@ -148,10 +148,10 @@ const AuthCallbackPage = () => {
   useEffect(() => {
     // ✅ STRONGER GUARD: Prevent multiple executions completely using refs
     if (isProcessingRef.current || hasCompletedRef.current) {
-      console.log('⚠️ Already processing or completed, skipping...', {
-        isProcessing: isProcessingRef.current,
-        hasCompleted: hasCompletedRef.current,
-      });
+      // console.log('⚠️ Already processing or completed, skipping...', {
+      //   isProcessing: isProcessingRef.current,
+      //   hasCompleted: hasCompletedRef.current,
+      // });
       return;
     }
 
@@ -160,7 +160,7 @@ const AuthCallbackPage = () => {
     const handleAuthCallback = async () => {
       // ✅ Set processing flag immediately and never allow re-execution using refs
       if (isProcessingRef.current) {
-        console.log('⚠️ Already processing, aborting...');
+        // console.log('⚠️ Already processing, aborting...');
         return;
       }
 
@@ -169,7 +169,7 @@ const AuthCallbackPage = () => {
       isProcessingRef.current = true;
 
       try {
-        console.log('🔄 Processing auth callback...');
+        // console.log('🔄 Processing auth callback...');
 
         // Get the token from URL hash or search params
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
@@ -225,9 +225,9 @@ const AuthCallbackPage = () => {
                   .maybeSingle();
 
                 if (existingUser) {
-                  console.log(
-                    '✅ User database records already exist, skipping creation'
-                  );
+                  // console.log(
+                  //   '✅ User database records already exist, skipping creation'
+                  // );
                   setStatus('success');
                   setMessage('Welcome back! Redirecting to dashboard...');
 

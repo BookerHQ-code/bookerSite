@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
 
   // Debug state (remove in production)
   useEffect(() => {
-    console.log('AuthContext State:', { loading, initialized, user: user?.id });
+    // console.log('AuthContext State:', { loading, initialized, user: user?.id });
   }, [loading, initialized, user]);
 
   // Load user profile and roles
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
     // ✅ GUARD: Don't reload if already loading for this user
     if (loadingProfileForUser.current === authUser.id) {
-      console.log('👤 Already loading profile for this user, skipping...');
+      // console.log('👤 Already loading profile for this user, skipping...');
       return;
     }
 
@@ -60,14 +60,14 @@ export const AuthProvider = ({ children }) => {
       currentUserProfile.current.auth_user_id === authUser.id &&
       currentUserRoles.current?.length > 0
     ) {
-      console.log('👤 Profile already loaded and current for this user');
+      // console.log('👤 Profile already loaded and current for this user');
       return;
     }
 
     loadingProfileForUser.current = authUser.id;
 
     try {
-      console.log('👤 Loading profile for:', authUser.id);
+      // console.log('👤 Loading profile for:', authUser.id);
 
       // Basic user data
       const { data: userData, error: userError } = await supabase
@@ -82,9 +82,9 @@ export const AuthProvider = ({ children }) => {
           userError?.code === 'PGRST116' ||
           userError?.details?.includes('0 rows')
         ) {
-          console.log(
-            '📝 User verified but database setup not complete - this is normal during signup flow'
-          );
+          // console.log(
+          //   '📝 User verified but database setup not complete - this is normal during signup flow'
+          // );
           setUserProfile(null);
           setUserRoles([]);
           return;
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      console.log('✅ User data loaded');
+      // console.log('✅ User data loaded');
 
       // Set basic profile first
       setUserProfile({ ...userData });
@@ -153,7 +153,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       setUserProfile(profile);
-      console.log('✅ Profile loaded:', { roles });
+      // console.log('✅ Profile loaded:', { roles });
     } catch (error) {
       console.error('Profile loading error:', error);
       setUserProfile(null);
@@ -168,7 +168,7 @@ export const AuthProvider = ({ children }) => {
     let mounted = true;
 
     const initializeAuth = async () => {
-      console.log('🔄 Initializing auth...');
+      // console.log('🔄 Initializing auth...');
 
       try {
         // Get initial session with timeout
@@ -182,12 +182,12 @@ export const AuthProvider = ({ children }) => {
           error,
         } = await Promise.race([sessionPromise, timeoutPromise]);
 
-        console.log('📱 Session result:', { session: !!session, error });
+        // console.log('📱 Session result:', { session: !!session, error });
 
         if (error) {
           console.error('Session error:', error);
         } else if (session && session.user && mounted) {
-          console.log('✅ Found existing session');
+          // console.log('✅ Found existing session');
           setSession(session);
           setUser(session.user);
           // Don't await profile loading during init
@@ -201,7 +201,7 @@ export const AuthProvider = ({ children }) => {
 
       // ✅ ALWAYS complete initialization
       if (mounted) {
-        console.log('✅ Auth initialization complete');
+        // console.log('✅ Auth initialization complete');
         setLoading(false);
         setInitialized(true);
       }
@@ -224,7 +224,7 @@ export const AuthProvider = ({ children }) => {
 
       // ✅ REDUCE NOISE: Only log non-redundant events
       if (event !== 'SIGNED_IN' || userId !== currentUserId) {
-        console.log('🔄 Auth event:', event, userId || 'no user');
+        // console.log('🔄 Auth event:', event, userId || 'no user');
       }
 
       setSession(session);
@@ -233,15 +233,15 @@ export const AuthProvider = ({ children }) => {
       if (event === 'SIGNED_IN' && session?.user) {
         // ✅ GUARD: Don't reload profile if it's the same user and already loaded
         if (userId === currentUserId && hasProfile) {
-          console.log('👤 Profile already loaded for user, skipping reload');
+          // console.log('👤 Profile already loaded for user, skipping reload');
           setLoading(false);
           return;
         }
 
-        console.log('✅ User signed in, loading profile...');
+        // console.log('✅ User signed in, loading profile...');
         loadUserProfile(session.user).catch(console.error);
       } else if (event === 'SIGNED_OUT' || !session) {
-        console.log('✅ User signed out, clearing state...');
+        // console.log('✅ User signed out, clearing state...');
         setUserProfile(null);
         setUserRoles([]);
       }
@@ -284,11 +284,11 @@ export const AuthProvider = ({ children }) => {
 
   // Auth actions
   const signOut = async () => {
-    console.log('🔄 Starting sign out process...');
+    // console.log('🔄 Starting sign out process...');
     setLoading(true);
 
     try {
-      console.log('🔄 Calling supabase.auth.signOut()...');
+      // console.log('🔄 Calling supabase.auth.signOut()...');
 
       // ✅ Add timeout to prevent hanging
       const signOutPromise = supabase.auth.signOut();
@@ -304,14 +304,14 @@ export const AuthProvider = ({ children }) => {
         throw result.error;
       }
 
-      console.log('✅ Supabase sign out successful');
+      // console.log('✅ Supabase sign out successful');
     } catch (error) {
       console.error('❌ Sign out failed or timed out:', error.message);
       // Continue with manual cleanup even if Supabase signOut fails
     }
 
     // ✅ ALWAYS clear state regardless of Supabase response
-    console.log('🔄 Clearing auth state...');
+    // console.log('🔄 Clearing auth state...');
     setSession(null);
     setUser(null);
     setUserProfile(null);
@@ -325,8 +325,8 @@ export const AuthProvider = ({ children }) => {
       console.error('Storage clear error:', storageError);
     }
 
-    console.log('✅ Auth state cleared');
-    console.log('🔄 Setting loading to false');
+    // console.log('✅ Auth state cleared');
+    // console.log('🔄 Setting loading to false');
     setLoading(false);
 
     // ✅ Force navigation to home page

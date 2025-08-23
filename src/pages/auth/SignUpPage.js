@@ -188,12 +188,13 @@ const SignUpPage = () => {
 
       if (signUpError) throw signUpError;
 
-      console.log('✅ Supabase signup successful - verification email sent!');
+      // console.log('✅ Supabase signup successful - verification email sent!');
 
       if (data.user) {
-        console.log(
-          '✅ Showing success modal - database operations deferred until verification'
-        );
+        console
+          .log
+          // '✅ Showing success modal - database operations deferred until verification'
+          ();
 
         // Show success modal immediately - no database operations yet
         setSuccessEmail(formData.email);
@@ -209,7 +210,7 @@ const SignUpPage = () => {
       console.error('❌ Sign up error:', error);
       setError(error.message || 'An error occurred during sign up');
     } finally {
-      console.log('🔄 Clearing loading state');
+      // console.log('🔄 Clearing loading state');
       setLoading(false);
     }
   };
