@@ -8,10 +8,10 @@
   status = 200
 
 [context.production]
-  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "production", REACT_APP_URL = "https://bookerhq.netlify.app/" }
+  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "production", REACT_APP_URL = "https://bookerhq.netlify.app" }
 
 [context.testing]
-  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "testing", REACT_APP_URL = "https://testing--bookerhq.netlify.app/" }
+  environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "testing", REACT_APP_URL = "https://testing--bookerhq.netlify.app" }
 
 [context.branch-deploy]
   environment = { NODE_ENV = "production", REACT_APP_ENVIRONMENT = "testing", REACT_APP_URL = "DEPLOY_URL" }
