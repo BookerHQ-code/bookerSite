@@ -1,5 +1,5 @@
 // src/pages/auth/AuthCallbackPage.js
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import config from '../../config/environment';
 import { getTableName, supabase } from '../../lib/supabase';
@@ -7,10 +7,22 @@ import { getTableName, supabase } from '../../lib/supabase';
 const AuthCallbackPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState('verifying'); // verifying, success, error
   const [message, setMessage] = useState('Verifying your email...');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [hasCompleted, setHasCompleted] = useState(false);
 
+  const isProcessingRef = useRef(false);
+  const hasCompletedRef = useRef(false);
+
+  // Update refs when state changes
+  useEffect(() => {
+    isProcessingRef.current = isProcessing;
+  }, [isProcessing]);
+
+  useEffect(() => {
+    hasCompletedRef.current = hasCompleted;
+  }, [hasCompleted]);
   // Function to create database records after email verification
   const createUserDatabaseRecords = async user => {
     try {
@@ -28,179 +40,104 @@ const AuthCallbackPage = () => {
 
       let userId = null;
 
-      // ✅ IMPROVED: Check if user already exists first
-      const { data: existingUser } = await supabase
+      // Create user record
+      const { data: userRecord, error: userError } = await supabase
         .from(getTableName('users'))
-        .select('id')
-        .eq('auth_user_id', user.id)
+        .insert({
+          auth_user_id: user.id,
+          email: user.email,
+        })
+        .select()
         .single();
 
-      if (existingUser) {
-        console.log('✅ User record already exists:', existingUser.id);
-        userId = existingUser.id;
-      } else {
-        // Create user record only if it doesn't exist
-        const { data: userRecord, error: userError } = await supabase
-          .from(getTableName('users'))
-          .insert({
-            auth_user_id: user.id,
-            email: user.email,
-          })
-          .select()
-          .single();
+      if (userError) {
+        // If user already exists, fetch it instead
+        if (userError.code === '23505') {
+          console.log('🔄 User record already exists, fetching...');
+          const { data: existingUser, error: fetchError } = await supabase
+            .from(getTableName('users'))
+            .select('*')
+            .eq('auth_user_id', user.id)
+            .single();
 
-        if (userError) {
-          if (userError.code === '23505') {
-            // Handle race condition - another tab already created it
-            console.log('🔄 User created by another process, fetching...');
-            const { data: raceUser } = await supabase
-              .from(getTableName('users'))
-              .select('id')
-              .eq('auth_user_id', user.id)
-              .single();
-
-            userId = raceUser?.id;
-          } else {
-            throw userError;
-          }
+          if (fetchError) throw fetchError;
+          userId = existingUser.id;
         } else {
-          userId = userRecord.id;
+          throw userError;
         }
+      } else {
+        userId = userRecord.id;
       }
 
       if (!userId) {
         throw new Error('Could not get user ID');
       }
 
-      console.log('✅ User record ready:', userId);
+      console.log('✅ User record created/found');
 
-      // ✅ IMPROVED: Check if role already assigned
-      const { data: existingRole } = await supabase
-        .from(getTableName('user_role_assignments'))
-        .select('id')
-        .eq('user_id', userId)
-        .eq('role', role)
-        .single();
+      // Create role assignment using secure function
+      console.log('🔄 Assigning user role...');
+      const functionName = config.api.tablePrefix
+        ? 'assign_testing_user_role'
+        : 'assign_user_role';
+      const { error: roleError } = await supabase.rpc(functionName, {
+        user_uuid: userId,
+        user_role: role,
+      });
 
-      if (!existingRole) {
-        console.log('🔄 Assigning user role...');
-        const functionName = config.api.tablePrefix
-          ? 'assign_testing_user_role'
-          : 'assign_user_role';
-        const { error: roleError } = await supabase.rpc(functionName, {
-          user_uuid: userId,
-          user_role: role,
-        });
-
-        if (roleError && !roleError.message?.includes('already assigned')) {
-          throw roleError;
-        }
-        console.log('✅ Role assigned');
-      } else {
-        console.log('✅ Role already assigned');
+      if (roleError && !roleError.message?.includes('already assigned')) {
+        throw roleError;
       }
 
-      // ✅ IMPROVED: Check if profile already exists
-      let profileTableName = '';
-      if (role === 'customer') profileTableName = 'customer_profiles';
-      else if (role === 'stylist') profileTableName = 'stylist_profiles';
-      else if (role === 'tenant_admin') profileTableName = 'tenant_profiles';
+      console.log('✅ Role assigned');
 
-      if (profileTableName) {
-        const { data: existingProfile } = await supabase
-          .from(getTableName(profileTableName))
-          .select('id')
-          .eq('user_id', userId)
-          .single();
+      // Create specific profile based on role
+      console.log('🔄 Creating profile...');
 
-        if (!existingProfile) {
-          console.log('🔄 Creating profile...');
-          if (role === 'customer') {
-            const { data: existingProfile } = await supabase
-              .from(getTableName('customer_profiles'))
-              .select('id')
-              .eq('user_id', userId)
-              .single();
+      if (role === 'customer') {
+        const { error: profileError } = await supabase
+          .from(getTableName('customer_profiles'))
+          .insert({
+            user_id: userId,
+            first_name: userData.first_name || '',
+            last_name: userData.last_name || '',
+            phone: userData.phone || null,
+          });
 
-            if (!existingProfile) {
-              console.log('🔄 Creating customer profile...');
-              const { error: profileError } = await supabase
-                .from(getTableName('customer_profiles'))
-                .insert({
-                  user_id: userId,
-                  first_name: userData.first_name || '',
-                  last_name: userData.last_name || '',
-                  phone: userData.phone || null,
-                });
+        if (profileError && profileError.code !== '23505') {
+          throw profileError;
+        }
+      } else if (role === 'stylist') {
+        const { error: profileError } = await supabase
+          .from(getTableName('stylist_profiles'))
+          .insert({
+            user_id: userId,
+            first_name: userData.first_name || '',
+            last_name: userData.last_name || '',
+            phone: userData.phone || null,
+            bio: userData.bio || null,
+          });
 
-              if (profileError && profileError.code !== '23505') {
-                throw profileError;
-              }
-              console.log('✅ Customer profile created');
-            } else {
-              console.log('✅ Customer profile already exists');
-            }
-          } else if (role === 'stylist') {
-            const { data: existingProfile } = await supabase
-              .from(getTableName('stylist_profiles'))
-              .select('id')
-              .eq('user_id', userId)
-              .single();
+        if (profileError && profileError.code !== '23505') {
+          throw profileError;
+        }
+      } else if (role === 'tenant_admin') {
+        const { error: profileError } = await supabase
+          .from(getTableName('tenant_profiles'))
+          .insert({
+            user_id: userId,
+            business_name: userData.business_name || '',
+            bio: userData.bio || null,
+            address: userData.address || null,
+            phone: userData.phone || null,
+          });
 
-            if (!existingProfile) {
-              console.log('🔄 Creating stylist profile...');
-              const { error: profileError } = await supabase
-                .from(getTableName('stylist_profiles'))
-                .insert({
-                  user_id: userId,
-                  first_name: userData.first_name || '',
-                  last_name: userData.last_name || '',
-                  phone: userData.phone || null,
-                  bio: userData.bio || null,
-                });
-
-              if (profileError && profileError.code !== '23505') {
-                throw profileError;
-              }
-              console.log('✅ Stylist profile created');
-            } else {
-              console.log('✅ Stylist profile already exists');
-            }
-          } else if (role === 'tenant_admin') {
-            const { data: existingProfile } = await supabase
-              .from(getTableName('tenant_profiles'))
-              .select('id')
-              .eq('user_id', userId)
-              .single();
-
-            if (!existingProfile) {
-              console.log('🔄 Creating tenant profile...');
-              const { error: profileError } = await supabase
-                .from(getTableName('tenant_profiles'))
-                .insert({
-                  user_id: userId,
-                  business_name: userData.business_name || '',
-                  bio: userData.bio || null,
-                  address: userData.address || null,
-                  phone: userData.phone || null,
-                });
-
-              if (profileError && profileError.code !== '23505') {
-                throw profileError;
-              }
-              console.log('✅ Tenant profile created');
-            } else {
-              console.log('✅ Tenant profile already exists');
-            }
-          }
-
-          console.log('✅ Profile handling completed');
-          console.log('✅ Profile created successfully');
-        } else {
-          console.log('✅ Profile already exists');
+        if (profileError && profileError.code !== '23505') {
+          throw profileError;
         }
       }
 
+      console.log('✅ Profile created successfully');
       return true;
     } catch (error) {
       console.error('❌ Database setup failed:', error);
@@ -208,17 +145,28 @@ const AuthCallbackPage = () => {
     }
   };
 
-  // Update the useEffect to include the guard:
   useEffect(() => {
-    // ✅ GUARD: Prevent multiple executions
-    if (isProcessing) {
-      console.log('⚠️ Already processing callback, skipping...');
+    // ✅ STRONGER GUARD: Prevent multiple executions completely using refs
+    if (isProcessingRef.current || hasCompletedRef.current) {
+      console.log('⚠️ Already processing or completed, skipping...', {
+        isProcessing: isProcessingRef.current,
+        hasCompleted: hasCompletedRef.current,
+      });
       return;
     }
 
+    let mounted = true;
+
     const handleAuthCallback = async () => {
-      // ✅ Set processing flag immediately
+      // ✅ Set processing flag immediately and never allow re-execution using refs
+      if (isProcessingRef.current) {
+        console.log('⚠️ Already processing, aborting...');
+        return;
+      }
+
+      // Update both state and ref
       setIsProcessing(true);
+      isProcessingRef.current = true;
 
       try {
         console.log('🔄 Processing auth callback...');
@@ -269,23 +217,31 @@ const AuthCallbackPage = () => {
               setMessage('Creating your account...');
 
               // ✅ GUARD: Check if user already has database records
-              const { data: existingUser } = await supabase
-                .from(getTableName('users'))
-                .select('id')
-                .eq('auth_user_id', data.user.id)
-                .single();
+              try {
+                const { data: existingUser } = await supabase
+                  .from(getTableName('users'))
+                  .select('id')
+                  .eq('auth_user_id', data.user.id)
+                  .maybeSingle();
 
-              if (existingUser) {
+                if (existingUser) {
+                  console.log(
+                    '✅ User database records already exist, skipping creation'
+                  );
+                  setStatus('success');
+                  setMessage('Welcome back! Redirecting to dashboard...');
+
+                  setTimeout(() => {
+                    if (mounted) {
+                      navigate('/dashboard', { replace: true });
+                    }
+                  }, 2000);
+                  return;
+                }
+              } catch (checkError) {
                 console.log(
-                  '✅ User database records already exist, skipping creation'
+                  '📝 Could not check existing user, proceeding with creation...'
                 );
-                setStatus('success');
-                setMessage('Welcome back! Redirecting to dashboard...');
-
-                setTimeout(() => {
-                  navigate('/dashboard', { replace: true });
-                }, 2000);
-                return;
               }
 
               // Create database records now that email is verified
@@ -299,7 +255,9 @@ const AuthCallbackPage = () => {
 
                 // Wait a moment then redirect to dashboard
                 setTimeout(() => {
-                  navigate('/dashboard', { replace: true });
+                  if (mounted) {
+                    navigate('/dashboard', { replace: true });
+                  }
                 }, 2000);
               } catch (dbError) {
                 console.error('Database setup failed:', dbError);
@@ -310,12 +268,14 @@ const AuthCallbackPage = () => {
 
                 // Still redirect to login after delay
                 setTimeout(() => {
-                  navigate('/login', {
-                    state: {
-                      verified: true,
-                      setupFailed: true,
-                    },
-                  });
+                  if (mounted) {
+                    navigate('/login', {
+                      state: {
+                        verified: true,
+                        setupFailed: true,
+                      },
+                    });
+                  }
                 }, 3000);
               }
             } else {
@@ -326,21 +286,97 @@ const AuthCallbackPage = () => {
             setStatus('error');
             setMessage('Invalid verification link. Please try again.');
           }
+        } else if (type === 'recovery') {
+          // Password reset flow
+          if (accessToken && refreshToken) {
+            const { error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+
+            if (sessionError) {
+              console.error('Session error:', sessionError);
+              setStatus('error');
+              setMessage('Invalid reset link. Please try again.');
+              return;
+            }
+
+            setStatus('success');
+            setMessage('Password reset link verified! Redirecting...');
+
+            setTimeout(() => {
+              if (mounted) {
+                navigate('/auth/reset-password', { replace: true });
+              }
+            }, 2000);
+          } else {
+            setStatus('error');
+            setMessage('Invalid reset link. Please try again.');
+          }
+        } else {
+          // Handle other auth flows or direct access
+          const { data, error: sessionError } =
+            await supabase.auth.getSession();
+
+          if (sessionError) {
+            console.error('Session error:', sessionError);
+            setStatus('error');
+            setMessage('Authentication failed. Please try again.');
+            return;
+          }
+
+          if (data.session && data.session.user) {
+            setStatus('success');
+            setMessage('Authentication successful! Redirecting...');
+
+            setTimeout(() => {
+              if (mounted) {
+                navigate('/dashboard', { replace: true });
+              }
+            }, 2000);
+          } else {
+            setStatus('error');
+            setMessage('No valid session found. Please sign in again.');
+
+            setTimeout(() => {
+              if (mounted) {
+                navigate('/login', { replace: true });
+              }
+            }, 3000);
+          }
         }
-        // ... rest of the auth handling code stays the same
+
+        // Mark as completed after successful processing
+        if (mounted) {
+          setHasCompleted(true);
+          hasCompletedRef.current = true;
+        }
       } catch (error) {
         console.error('Callback error:', error);
         setStatus('error');
         setMessage('An unexpected error occurred. Please try again.');
 
         setTimeout(() => {
-          navigate('/login', { replace: true });
+          if (mounted) {
+            navigate('/login', { replace: true });
+          }
         }, 3000);
+
+        // Mark as completed even on error to prevent retry loops
+        if (mounted) {
+          setHasCompleted(true);
+          hasCompletedRef.current = true;
+        }
       }
     };
 
+    // Start the callback handling
     handleAuthCallback();
-  }, [navigate, searchParams, isProcessing]);
+
+    return () => {
+      mounted = false;
+    };
+  }, [navigate, searchParams]);
 
   const getStatusIcon = () => {
     switch (status) {
