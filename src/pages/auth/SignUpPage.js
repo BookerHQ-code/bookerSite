@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import config from '../../config/environment';
 import { supabase } from '../../lib/supabase';
@@ -31,6 +31,7 @@ const SignUpPage = () => {
   const [successEmail, setSuccessEmail] = useState('');
   const [successRole, setSuccessRole] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [emailChecking, setEmailChecking] = useState(false);
 
   const roles = [
     {
@@ -56,17 +57,73 @@ const SignUpPage = () => {
     },
   ];
 
+  const checkEmailExists = async email => {
+    if (!email || !email.includes('@') || email.length < 5) return;
+
+    setEmailChecking(true);
+
+    try {
+      // Try to sign in with a fake password to see if user exists
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: 'fake-password-check-12345',
+      });
+
+      // If we get "Invalid login credentials", the email exists
+      if (error?.message.includes('Invalid login credentials')) {
+        setEmailError(
+          'An account with this email already exists. Please sign in instead.'
+        );
+      } else if (error?.message.includes('Email not confirmed')) {
+        // Email exists but not verified
+        setEmailError(
+          'An account with this email exists but is not verified. Please check your email or sign in.'
+        );
+      }
+      // If no error or other errors, assume email is available
+    } catch (error) {
+      // Ignore network errors or other issues during check
+      console.log('Email check error (ignored):', error);
+    } finally {
+      setEmailChecking(false);
+    }
+  };
+
+  const timeoutRef = useRef(null); // Add this with your other refs/state
+
   const handleInputChange = e => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError(''); // Clear error when user types
+
+    setError(''); // Clear general error when user types
 
     if (e.target.name === 'email') {
       setEmailError('');
+      setEmailChecking(false);
+
+      // ✅ Clear existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // ✅ Set new timeout with ref for cleanup
+      timeoutRef.current = setTimeout(() => {
+        checkEmailExists(e.target.value);
+      }, 1000); // Check 1 second after user stops typing
     }
   };
+
+  // Add this useEffect to cleanup timeout on unmount:
+  useEffect(() => {
+    return () => {
+      // Cleanup timeout when component unmounts
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const validateForm = () => {
     if (!selectedRole) {
@@ -380,20 +437,29 @@ const SignUpPage = () => {
               >
                 Email address
               </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500 ${
-                  emailError
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                    : 'border-gray-300'
-                }`}
-              />
+              <div className="mt-1 relative">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`block w-full px-3 py-2 pr-10 border rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500 ${
+                    emailError
+                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                      : 'border-gray-300'
+                  }`}
+                />
+                {/* ✅ Loading spinner when checking email */}
+                {emailChecking && (
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <div className="animate-spin h-4 w-4 border-2 border-brand-600 border-t-transparent rounded-full"></div>
+                  </div>
+                )}
+              </div>
+              {/* Email-specific error message */}
               {emailError && (
                 <p className="mt-2 text-sm text-red-600">{emailError}</p>
               )}
