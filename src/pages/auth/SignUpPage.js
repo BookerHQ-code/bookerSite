@@ -20,6 +20,10 @@ const SignUpPage = () => {
     businessName: '',
     bio: '',
     address: '',
+    city: '',
+    state: '',
+    country: '',
+    postal_code: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -118,6 +122,10 @@ const SignUpPage = () => {
       businessName: '',
       bio: '',
       address: '',
+      city: '',
+      state: '',
+      country: '',
+      postal_code: '',
     });
   };
 
@@ -182,6 +190,10 @@ const SignUpPage = () => {
             phone: formData.phone,
             bio: formData.bio,
             address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            country: formData.country,
+            postal_code: formData.postal_code,
           },
         },
       });
@@ -521,6 +533,58 @@ const SignUpPage = () => {
                     onChange={handleInputChange}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
                   />
+                </div>
+                <div>
+                  <label
+                    htmlFor="state"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    State / Province
+                  </label>
+                  <input
+                    id="state"
+                    name="state"
+                    type="text"
+                    value={formData.state}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Country
+                    </label>
+                    <input
+                      id="country"
+                      name="country"
+                      type="text"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="postal_code"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Postal Code
+                    </label>
+                    <input
+                      id="postal_code"
+                      name="postal_code"
+                      type="text"
+                      value={formData.postal_code}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
+                      placeholder="12345"
+                    />
+                  </div>
                 </div>
               </>
             )}

@@ -130,6 +130,10 @@ const AuthCallbackPage = () => {
             bio: userData.bio || null,
             address: userData.address || null,
             phone: userData.phone || null,
+            city: userData.city || null,
+            state: userData.state || null,
+            country: userData.country || null,
+            postal_code: userData.postal_code || null,
           });
 
         if (profileError && profileError.code !== '23505') {
