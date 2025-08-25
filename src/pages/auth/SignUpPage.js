@@ -897,7 +897,36 @@ const SignUpPage = () => {
                 !emailChecking &&
                 formData.email && (
                   <p className="mt-2 text-xs text-center text-gray-500">
-                    Complete all required fields to create account
+                    {(() => {
+                      if (selectedRole === 'tenant_admin') {
+                        const missing = [];
+                        if (!formData.businessName)
+                          missing.push('business name');
+                        if (!formData.address) missing.push('address');
+                        if (!formData.city) missing.push('city');
+                        if (!formData.state) missing.push('state/province');
+                        if (!formData.country) missing.push('country');
+                        if (!formData.postal_code) missing.push('postal code');
+
+                        if (missing.length > 0) {
+                          return `Please complete: ${missing.join(', ')}`;
+                        }
+                      }
+
+                      if (
+                        (selectedRole === 'customer' ||
+                          selectedRole === 'stylist') &&
+                        (!formData.firstName || !formData.lastName)
+                      ) {
+                        return 'Please enter your first and last name';
+                      }
+
+                      if (formData.password !== formData.confirmPassword) {
+                        return 'Passwords must match';
+                      }
+
+                      return 'Complete all required fields to create account';
+                    })()}
                   </p>
                 )}
             </div>
