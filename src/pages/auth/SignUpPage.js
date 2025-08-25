@@ -57,6 +57,20 @@ const SignUpPage = () => {
     },
   ];
 
+  const isFormValid = () => {
+    return (
+      formData.email &&
+      formData.password &&
+      formData.confirmPassword &&
+      formData.password === formData.confirmPassword &&
+      !emailError &&
+      !emailChecking &&
+      (selectedRole === 'tenant_admin'
+        ? formData.businessName
+        : formData.firstName && formData.lastName)
+    );
+  };
+
   const checkEmailExists = async email => {
     if (!email || !email.includes('@') || email.length < 5) return;
 
@@ -778,11 +792,61 @@ const SignUpPage = () => {
             <div>
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full btn-primary"
+                disabled={loading || !!emailError}
+                className={`w-full font-medium py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  loading || emailError
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed focus:ring-gray-300 hover:bg-gray-300' // ✅ Prevent hover effect when disabled
+                    : 'bg-brand-500 hover:bg-brand-600 text-white focus:ring-brand-500'
+                }`}
+                title={
+                  emailError
+                    ? 'Cannot create account - email already exists'
+                    : ''
+                } // ✅ Tooltip on hover
               >
                 {loading ? 'Creating Account...' : 'Create Account'}
               </button>
+
+              {/* ✅ Specific helper text based on what's wrong */}
+              {emailError && (
+                <p className="mt-3 text-sm text-center text-red-600 bg-red-50 p-2 rounded-md border border-red-200">
+                  <svg
+                    className="inline w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                  This email is already registered -
+                  <Link
+                    to="/login"
+                    className="underline hover:no-underline ml-1"
+                  >
+                    sign in instead
+                  </Link>
+                </p>
+              )}
+
+              {emailChecking && (
+                <p className="mt-2 text-sm text-center text-blue-600">
+                  Verifying email availability...
+                </p>
+              )}
+
+              {!isFormValid() &&
+                !emailError &&
+                !emailChecking &&
+                formData.email && (
+                  <p className="mt-2 text-xs text-center text-gray-500">
+                    Complete all required fields to create account
+                  </p>
+                )}
             </div>
           </form>
 
