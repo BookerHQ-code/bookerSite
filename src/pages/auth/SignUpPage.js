@@ -705,7 +705,7 @@ const SignUpPage = () => {
                     htmlFor="businessName"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Business Name
+                    Business Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="businessName"
