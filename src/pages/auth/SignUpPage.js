@@ -63,27 +63,22 @@ const SignUpPage = () => {
     setEmailChecking(true);
 
     try {
-      // Try to sign in with a fake password to see if user exists
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: 'fake-password-check-12345',
+      const { data, error } = await supabase.rpc('check_email_exists', {
+        check_email: email.toLowerCase().trim(),
       });
 
-      // If we get "Invalid login credentials", the email exists
-      if (error?.message.includes('Invalid login credentials')) {
+      if (error) {
+        console.log('Email check error:', error);
+        return;
+      }
+
+      if (data === true) {
         setEmailError(
           'An account with this email already exists. Please sign in instead.'
         );
-      } else if (error?.message.includes('Email not confirmed')) {
-        // Email exists but not verified
-        setEmailError(
-          'An account with this email exists but is not verified. Please check your email or sign in.'
-        );
       }
-      // If no error or other errors, assume email is available
     } catch (error) {
-      // Ignore network errors or other issues during check
-      console.log('Email check error (ignored):', error);
+      console.log('Email check network error (ignored):', error);
     } finally {
       setEmailChecking(false);
     }
