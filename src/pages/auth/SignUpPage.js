@@ -58,17 +58,34 @@ const SignUpPage = () => {
   ];
 
   const isFormValid = () => {
-    return (
+    // Basic validation for all roles
+    const basicValid =
       formData.email &&
       formData.password &&
       formData.confirmPassword &&
       formData.password === formData.confirmPassword &&
       !emailError &&
-      !emailChecking &&
-      (selectedRole === 'tenant_admin'
-        ? formData.businessName
-        : formData.firstName && formData.lastName)
-    );
+      !emailChecking;
+
+    if (!basicValid) return false;
+
+    // Role-specific validation
+    if (selectedRole === 'customer' || selectedRole === 'stylist') {
+      return formData.firstName && formData.lastName;
+    }
+
+    if (selectedRole === 'tenant_admin') {
+      return (
+        formData.businessName &&
+        formData.address &&
+        formData.city &&
+        formData.state &&
+        formData.country &&
+        formData.postal_code
+      );
+    }
+
+    return true;
   };
 
   const checkEmailExists = async email => {
@@ -134,6 +151,7 @@ const SignUpPage = () => {
     };
   }, []);
 
+  // Update your validateForm function to include address validation:
   const validateForm = () => {
     if (!selectedRole) {
       setError('Please select your role');
@@ -166,6 +184,32 @@ const SignUpPage = () => {
     if (selectedRole === 'tenant_admin') {
       if (!formData.businessName) {
         setError('Business name is required');
+        return false;
+      }
+
+      // ✅ NEW: Validate address fields for business tenants
+      if (!formData.address) {
+        setError('Street address is required');
+        return false;
+      }
+
+      if (!formData.city) {
+        setError('City is required');
+        return false;
+      }
+
+      if (!formData.state) {
+        setError('State/Province is required');
+        return false;
+      }
+
+      if (!formData.country) {
+        setError('Country is required');
+        return false;
+      }
+
+      if (!formData.postal_code) {
+        setError('Postal code is required');
         return false;
       }
     }
@@ -661,34 +705,40 @@ const SignUpPage = () => {
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
                   />
                 </div>
+
+                {/* ✅ Updated: Address fields now required */}
                 <div>
                   <label
                     htmlFor="address"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Business Address
+                    Street Address <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="address"
                     name="address"
                     type="text"
+                    required // ✅ Added required
                     value={formData.address}
                     onChange={handleInputChange}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
+                    placeholder="123 Main Street"
                   />
                 </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label
                       htmlFor="city"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      City
+                      City <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="city"
                       name="city"
                       type="text"
+                      required // ✅ Added required
                       value={formData.city}
                       onChange={handleInputChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
@@ -699,12 +749,13 @@ const SignUpPage = () => {
                       htmlFor="state"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      State / Province
+                      State / Province <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="state"
                       name="state"
                       type="text"
+                      required // ✅ Added required
                       value={formData.state}
                       onChange={handleInputChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
@@ -718,12 +769,13 @@ const SignUpPage = () => {
                       htmlFor="country"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Country
+                      Country <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="country"
                       name="country"
                       type="text"
+                      required // ✅ Added required
                       value={formData.country}
                       onChange={handleInputChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
@@ -734,12 +786,13 @@ const SignUpPage = () => {
                       htmlFor="postal_code"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Postal Code
+                      Postal Code <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="postal_code"
                       name="postal_code"
                       type="text"
+                      required // ✅ Added required
                       value={formData.postal_code}
                       onChange={handleInputChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-500 focus:border-brand-500"
