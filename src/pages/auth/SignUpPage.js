@@ -141,6 +141,18 @@ const SignUpPage = () => {
     }
   };
 
+  const handleBackToRoleSelection = () => {
+    setSelectedRole('');
+    clearForm();
+    setError('');
+    setEmailError('');
+
+    // ✅ Also clear any checking states
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setEmailChecking(false);
+  };
   // Add this useEffect to cleanup timeout on unmount:
   useEffect(() => {
     return () => {
@@ -419,8 +431,8 @@ const SignUpPage = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <button
-            onClick={() => setSelectedRole('')}
-            className="mb-4 text-sm text-gray-500 hover:text-gray-700"
+            onClick={handleBackToRoleSelection}
+            className="mb-4 text-sm text-gray-500 hover:text-gray-700 transition-colors"
           >
             ← Back to role selection
           </button>
