@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import config from '../config/environment';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -28,26 +29,31 @@ const DashboardPage = () => {
   };
 
   const getNextSteps = () => {
+    const steps = [];
+
     if (isCustomer()) {
-      return [
-        'Browse available stylists',
-        'Book your first appointment',
-        'Complete your profile',
-      ];
+      steps.push(
+        { text: 'Browse available stylists', href: '/browse' },
+        { text: 'Book your first appointment', href: '/book' },
+        { text: 'Complete your profile', href: '/profile' }
+      );
     } else if (isStylist()) {
-      return [
-        'Set up your services',
-        'Configure your availability',
-        'Complete your profile',
-      ];
+      steps.push(
+        { text: 'Set up your services', href: '/services' },
+        { text: 'Configure your availability', href: '/availability' },
+        { text: 'Complete your profile', href: '/profile' }
+      );
     } else if (isTenantAdmin()) {
-      return [
-        'Set up your business profile',
-        'Add your stylists',
-        'Configure store hours',
-      ];
+      steps.push(
+        { text: 'Set up your business profile', href: '/profile' },
+        { text: 'Add your stylists', href: '/stylists' },
+        { text: 'Configure store hours', href: '/settings' }
+      );
     }
-    return ['Complete your profile setup'];
+
+    return steps.length
+      ? steps
+      : [{ text: 'Complete your profile setup', href: '/profile' }];
   };
 
   return (
@@ -65,6 +71,31 @@ const DashboardPage = () => {
 
         {/* Main content */}
         <div className="px-4 py-6 sm:px-0">
+          {/* Quick Actions for Stylists */}
+          {isStylist() && (
+            <div className="mb-8">
+              <div className="bg-gradient-to-r from-brand-500 to-accent-500 rounded-lg p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium mb-2">
+                      Ready to start offering services?
+                    </h3>
+                    <p className="text-brand-100">
+                      Set up your service offerings and start accepting
+                      bookings.
+                    </p>
+                  </div>
+                  <Link
+                    to="/services"
+                    className="bg-white text-brand-600 hover:bg-gray-50 font-medium py-3 px-6 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                  >
+                    Manage Services
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Profile Summary */}
             <div className="lg:col-span-2">
@@ -150,9 +181,20 @@ const DashboardPage = () => {
                             {index + 1}
                           </span>
                         </div>
-                        <span className="ml-3 text-sm text-gray-600">
-                          {step}
-                        </span>
+                        <div className="ml-3 flex-1">
+                          {step.href ? (
+                            <Link
+                              to={step.href}
+                              className="text-sm text-gray-600 hover:text-brand-600 transition-colors duration-200"
+                            >
+                              {step.text}
+                            </Link>
+                          ) : (
+                            <span className="text-sm text-gray-600">
+                              {step.text}
+                            </span>
+                          )}
+                        </div>
                       </li>
                     ))}
                   </ul>

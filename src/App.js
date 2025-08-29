@@ -14,6 +14,9 @@ import LoginPage from './pages/auth/LoginPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import VerifyEmailPage from './pages/auth/VerifyEmailPage';
 
+// Service Pages
+import ServicesPage from './pages/ServicesPage';
+
 // Components
 import RouteGuard, { AuthRedirect } from './components/auth/RouteGuard';
 import Footer from './components/layout/Footer';
@@ -59,6 +62,19 @@ function App() {
                 element={
                   <RouteGuard requireAuth={true} requireVerified={true}>
                     <DashboardPage />
+                  </RouteGuard>
+                }
+              />
+
+              <Route
+                path="/services"
+                element={
+                  <RouteGuard
+                    requireAuth={true}
+                    requireVerified={true}
+                    allowedRoles={['stylist']}
+                  >
+                    <ServicesPage />
                   </RouteGuard>
                 }
               />
